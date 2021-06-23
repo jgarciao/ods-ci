@@ -1,24 +1,50 @@
-*** Settings *** 
+*** Settings ***
 Library  SeleniumLibrary
 Library  String
+
+
+*** Variables ***
+${PERSPECTIVE_SWITCHER_BUTTON_ELEMENT}  xpath=//*[@data-test-id="perspective-switcher-toggle"]
+${PERSPECTIVE_SWITCHER_TEXT_ELEMENT}  xpath=/html/body/div[2]/div[1]/div/div/div/div/div/div/nav/div/div/button/span[1]/h2
+${PERSPECTIVE_ADMINISTRATOR_BUTTON}  xpath=//*[@id="page-sidebar"]/div/nav/div/div/ul/li[1]/button
+${PERSPECTIVE_DEVELOPER_BUTTON}      xpath=//*[@id="page-sidebar"]/div/nav/div/div/ul/li[2]/button
+
 
 *** Keywords ***
 Navigate To Page
    [Arguments]
-   ...    ${menu}    
+   ...    ${menu}
    ...    ${submenu}
    Wait Until Page Contains    ${menu}   timeout=150
    ${is_menu_expanded} =    Is Menu Expanded  ${menu}
    Run Keyword if    "${is_menu_expanded}" == "false"    Click Menu   ${menu}
-   Wait Until Page Contains    ${Submenu}
+   Wait Until Page Contains    ${submenu}
    Click Submenu    ${submenu}
+
+Switch To Administrator Perspective
+  Wait Until Page Contains Element     ${PERSPECTIVE_SWITCHER_TEXT_ELEMENT}  timeout=30
+  ${current_perspective} =   Get Text  ${PERSPECTIVE_SWITCHER_TEXT_ELEMENT}
+  IF  '${current_perspective}' != 'Administrator'
+      Click Button    ${PERSPECTIVE_SWITCHER_BUTTON_ELEMENT}
+      Wait Until Page Contains Element    ${PERSPECTIVE_ADMINISTRATOR_BUTTON}
+      Click Button    ${PERSPECTIVE_ADMINISTRATOR_BUTTON}
+  END
+
+Switch To Developer Perspective
+  Wait Until Page Contains Element     ${PERSPECTIVE_SWITCHER_TEXT_ELEMENT}   timeout=30
+  ${current_perspective} =   Get Text  ${PERSPECTIVE_SWITCHER_TEXT_ELEMENT}
+  IF  '${current_perspective}' != 'Developer'
+      Click Button    ${PERSPECTIVE_SWITCHER_BUTTON_ELEMENT}
+      Wait Until Page Contains Element    ${PERSPECTIVE_DEVELOPER_BUTTON}
+      Click Button    ${PERSPECTIVE_DEVELOPER_BUTTON}
+  END
 
 Click Menu
    [Arguments]
    ...   ${menu}
    Click Element    //button[text()="${menu}"]
- 
-Click Submenu    
+
+Click Submenu
    [Arguments]
    ...   ${submenu}
    Click Element   //a[text()="${submenu}"]
