@@ -3,6 +3,7 @@ Resource    ../../../Resources/ODS.robot
 Resource    ../../../Resources/Common.robot
 Resource    ../../../Resources/Page/OCPDashboard/OCPDashboard.resource
 Resource    ../../../Resources/Page/ODH/JupyterHub/JupyterLabLauncher.robot
+Resource    ../../../Resources/Page/ODH/Prometheus/Prometheus.resource
 Library        JupyterLibrary
 Library        SeleniumLibrary
 Test Setup     Begin Billing Metrics Web Test
@@ -11,6 +12,7 @@ Test Teardown  End Web Billing Metrics Test
 *** Variables ***
 ${METRIC_RHODS_CPU}                 cluster:usage:consumption:rhods:cpu:seconds:rate5m
 ${METRIC_RHODS_UNDEFINED}           cluster:usage:consumption:rhods:undefined:seconds:rate5m
+${METRIC_RHODS_CPU_PROMETHEUS}      sum(rate(container_cpu_usage_seconds_total{container="",pod=~"jupyterhub-nb.*",namespace="redhat-ods-applications"}[5m]))
 @{generic-1}  s2i-generic-data-science-notebook  https://github.com/lugi0/minimal-nb-image-test  minimal-nb-image-test/minimal-nb.ipynb
 
 *** Test Cases ***
@@ -24,6 +26,12 @@ Test Billing Metric (notebook cpu usage) on OpenShift Monitoring
   #Skip Test If Previous CPU Usage Is Not Zero
   Run Jupyter Notebook For 5 Minutes
   Verify Previus CPU Usage Is Greater Than Zero
+
+Test Billing Metric (notebook cpu usage) for Long Running Tests on OpenShift Monitoring
+  [Tags]  WIP
+  Run Long Running Jupyter Notebook For 30 Minutes
+  Verify Previous Notebook CPU Usage Is Greater Than Zero Using RHODS Prometheus API
+
 
 *** Keywords ***
 Begin Billing Metrics Web Test
@@ -59,12 +67,47 @@ Verify Previus CPU Usage Is Greater Than Zero
   Capture Page Screenshot
   Should Be True  ${metrics_value} > 0
 
+##############################
+# Prometheus API helpers
+##############################
+Get CPU Usage Using RHODS Prometheus API
+  ${resp}=   Prometheus.Run Query  ${RHODS_PROMETHEUS_URL}  ${RHODS_PROMETHEUS_TOKEN}  ${METRIC_RHODS_CPU_PROMETHEUS}
+  ${result_lenght}=   Get Length    ${resp.json()['data']['result']}
+  IF    ${result_lenght}>0
+    ${cpu_usage}=   Set Variable   ${resp.json()['data']['result'][0]['value'][1]}
+  ELSE
+    ${cpu_usage}=   Set Variable   0
+  END
+  [Return]   ${cpu_usage}
+
+Verify Previous Notebook CPU Usage Is Greater Than Zero Using RHODS Prometheus API
+  ${current_cpu_usage}=   Get CPU Usage Using RHODS Prometheus API
+  Log To Console    Current CPU usage: ${current_cpu_usage}
+  Should Be True  ${current_cpu_usage} > 0
+
+Log Notebook CPU Usage Using RHODS Prometheus API
+  [Arguments]  ${notebook_name}
+  ${current_cpu_usage}=   Get CPU Usage Using RHODS Prometheus API
+  Log   Current CPU usage (after ${notebook_name}): ${current_cpu_usage}
+  Log To Console    Current CPU usage (after ${notebook_name}): ${current_cpu_usage}
+
+
 ## TODO: Add this keyword with the other JupyterHub stuff
 Run Jupyter Notebook For 5 Minutes
   Open Browser  ${ODH_DASHBOARD_URL}  browser=${BROWSER.NAME}  options=${BROWSER.OPTIONS}
   Login To RHODS Dashboard  ${TEST_USER.USERNAME}  ${TEST_USER.PASSWORD}  ${TEST_USER.AUTH_TYPE}
   Wait for RHODS Dashboard to Load
   Iterative Image Test  s2i-generic-data-science-notebook  https://github.com/lugi0/minimal-nb-image-test  minimal-nb-image-test/minimal-nb.ipynb
+
+
+Run Long Running Jupyter Notebook For 30 Minutes
+  Open Browser  ${ODH_DASHBOARD_URL}  browser=${BROWSER.NAME}  options=${BROWSER.OPTIONS}
+  Login To RHODS Dashboard  ${TEST_USER.USERNAME}  ${TEST_USER.PASSWORD}  ${TEST_USER.AUTH_TYPE}
+  Wait for RHODS Dashboard to Load
+  Log Notebook CPU Usage Using RHODS Prometheus API   Start
+  Iterative Image Test  s2i-generic-data-science-notebook  https://github.com/lugi0/minimal-nb-image-test  minimal-nb-image-test/minimal-nb.ipynb
+  Log Notebook CPU Usage Using RHODS Prometheus API  notebook:minimal-nb.ipynb
+  # TODO: run other notebooks to make it really a "long running" notebook server
 
 
 ##TODO: This is a copy of "Iterative Image Test" keyword from image-iteration.robob. We have to refactor the code not to duplicate this method
