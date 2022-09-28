@@ -4,6 +4,7 @@ test-variables.yml
 venv/
 ods_ci.egg-info/
 test-output/
+task-output/
 dist/
 drivers/**/chromedriver
 must-gather-results.txt

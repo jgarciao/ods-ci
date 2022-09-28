@@ -1,0 +1,140 @@
+## Example: RHODS CloudService installed in ODS+AWS
+AUTOMATION_SETUP:
+    RHODS:
+        FLAVOUR: CloudService
+        INSTALL: True
+        IMAGE_URL: NotApplicable
+    CLUSTER:
+        CREATE: True
+        TEST_ENVIRONMENT: stage
+        NAME: qe-osd-aws
+        TYPE: OSD
+        PROVIDER: AWS
+        AWS_PROVIDER_OPTIONS:
+            REGION: us-east-2
+            AVAILABILITY: single-zone
+            COMPUTE_NODE_INSTANCE_TYPE: m5.2xlarge
+            COMPUTE_NODE_COUNT: 2
+            USE_SPOT_INSTANCES: False
+        GPU_SUPPORT:
+            ENABLE_GPU_SUPPORT: True
+            GPU_NODE_INSTANCE_TYPE: g4dn.xlarge
+            GPU_NODE_COUNT: 1
+        OPENSHIFT_VERSION: 4.11-latest
+        OPENSHIFT_CHANNEL_GROUP: stable
+AUTOMATION_TEARDOWN:
+    CLUSTER:
+        HIBERNATE: False
+        DELETE: True
+
+## Example: RHODS CloudService installed in ODS+GCP
+#AUTOMATION_SETUP:
+#    RHODS:
+#        FLAVOUR: CloudService
+#        INSTALL: True
+#        IMAGE_URL: NotApplicable
+#    CLUSTER:
+#        CREATE: True
+#        TEST_ENVIRONMENT: stage
+#        NAME: qe-osd-gcp
+#        TYPE: OSD
+#        PROVIDER: GCP
+#        GCP_PROVIDER_OPTIONS:
+#            REGION: us-east1
+#            AVAILABILITY: single-zone
+#            COMPUTE_NODE_INSTANCE_TYPE: custom-4-16384
+#            COMPUTE_NODE_COUNT: 2
+#        GPU_SUPPORT:
+#            ENABLE_GPU_SUPPORT: True
+#            GPU_NODE_INSTANCE_TYPE: g4dn.xlarge
+#            GPU_NODE_COUNT: 1
+#        OPENSHIFT_VERSION: 4.10-latest
+#        OPENSHIFT_CHANNEL_GROUP: stable
+#AUTOMATION_TEARDOWN:
+#    CLUSTER:
+#        HIBERNATE: False
+#        DELETE: True
+#
+#
+## Example: RHODS Self-Managed on OpenStack (PSI)
+#AUTOMATION_SETUP:
+#    RHODS:
+#        FLAVOUR: SelfManaged
+#        INSTALL: True
+#        IMAGE_URL: quay.io/modh/qe-catalog-source:latest
+#    CLUSTER:
+#        CREATE: True
+#        TEST_ENVIRONMENT: stage
+#        NAME: qe-ocp-psi
+#        TYPE: OCP
+#        PROVIDER: OpenStack
+#        OPENSTACK_PROVIDER_OPTIONS:
+#            COMPUTE_NODE_INSTANCE_TYPE: m5.2xlarge
+#            COMPUTE_NODE_COUNT: 2
+#        GPU_SUPPORT:
+#            ENABLE_GPU_SUPPORT: False
+#        OPENSHIFT_VERSION: 4.10-latest
+#        OPENSHIFT_CHANNEL_GROUP: stable
+#AUTOMATION_TEARDOWN:
+#    CLUSTER:
+#        HIBERNATE: False
+#        DELETE: True
+#
+## Example: RHODS Self-Managed on a OSD cluster
+#PRODUCT: RHODS-SelfManaged
+#AUTOMATION_SETUP:
+#    RHODS:
+#        FLAVOUR: SelfManaged
+#        INSTALL: True
+#        IMAGE_URL: quay.io/modh/qe-catalog-source:latest
+#    CLUSTER:
+#        CREATE: True
+#        TEST_ENVIRONMENT: stage
+#        NAME: qe-ods-aws-sm
+#        TYPE: OSD
+#        PROVIDER: AWS
+#        AWS_PROVIDER_OPTIONS:
+#            REGION: us-east-2
+#            AVAILABILITY: single-zone
+#            COMPUTE_NODE_INSTANCE_TYPE: m5.2xlarge
+#            COMPUTE_NODE_COUNT: 2
+#            USE_SPOT_INSTANCES: False
+#        GPU_SUPPORT:
+#            ENABLE_GPU_SUPPORT: True
+#            GPU_NODE_INSTANCE_TYPE: g4dn.xlarge
+#            GPU_NODE_COUNT: 1
+#        OPENSHIFT_VERSION: 4.10-latest
+#        OPENSHIFT_CHANNEL_GROUP: stable
+#AUTOMATION_TEARDOWN:
+#    CLUSTER:
+#        HIBERNATE: False
+#        DELETE: True
+#
+## Example: RHODS Self-Managed on a AWS cluster (not OSD)
+#AUTOMATION_SETUP:
+#    RHODS:
+#        FLAVOUR: SelfManaged
+#        INSTALL: True
+#        IMAGE_URL: quay.io/modh/qe-catalog-source:latest
+#    CLUSTER:
+#        CREATE: True
+#        TEST_ENVIRONMENT: stage
+#        NAME: qe-aws-sm
+#        TYPE: OCP
+#        PROVIDER: AWS
+#        AWS_PROVIDER_OPTIONS:
+#            REGION: us-east-2
+#            AVAILABILITY: single-zone
+#            COMPUTE_NODE_INSTANCE_TYPE: m5.2xlarge
+#            COMPUTE_NODE_COUNT: 2
+#            USE_SPOT_INSTANCES: False
+#        GPU_SUPPORT:
+#            ENABLE_GPU_SUPPORT: True
+#            GPU_NODE_INSTANCE_TYPE: g4dn.xlarge
+#            GPU_NODE_COUNT: 1
+#        OPENSHIFT_VERSION: 4.10-latest
+#        OPENSHIFT_CHANNEL_GROUP: stable
+#AUTOMATION_TEARDOWN:
+#    CLUSTER:
+#        HIBERNATE: False
+#        DELETE: True
