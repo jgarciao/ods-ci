@@ -1,8 +1,9 @@
-## Example: RHODS CloudService installed in ODS+AWS
+## Example: RHODS CloudService installed in ODS+AWS with AddOn flow
 AUTOMATION_SETUP:
     RHODS:
         FLAVOUR: CloudService
         INSTALL: True
+        INSTALL_METHOD: AddOn
         IMAGE_URL: NotApplicable
     CLUSTER:
         CREATE: True
@@ -27,11 +28,42 @@ AUTOMATION_TEARDOWN:
         HIBERNATE: False
         DELETE: True
 
-## Example: RHODS CloudService installed in ODS+GCP
+### Example: RHODS CloudService installed in ODS+AWS with olminstall
 #AUTOMATION_SETUP:
 #    RHODS:
 #        FLAVOUR: CloudService
 #        INSTALL: True
+#        INSTALL_METHOD: OlmInstall
+#        IMAGE_URL: quay.io/modh/qe-catalog-source:latest
+#    CLUSTER:
+#        CREATE: True
+#        TEST_ENVIRONMENT: stage
+#        NAME: qe-osd-aws
+#        TYPE: OSD
+#        PROVIDER: AWS
+#        AWS_PROVIDER_OPTIONS:
+#            REGION: us-east-2
+#            AVAILABILITY: single-zone
+#            COMPUTE_NODE_INSTANCE_TYPE: m5.2xlarge
+#            COMPUTE_NODE_COUNT: 2
+#            USE_SPOT_INSTANCES: False
+#        GPU_SUPPORT:
+#            ENABLE_GPU_SUPPORT: True
+#            GPU_NODE_INSTANCE_TYPE: g4dn.xlarge
+#            GPU_NODE_COUNT: 1
+#        OPENSHIFT_VERSION: 4.11-latest
+#        OPENSHIFT_CHANNEL_GROUP: stable
+#AUTOMATION_TEARDOWN:
+#    CLUSTER:
+#        HIBERNATE: False
+#        DELETE: True
+
+## Example: RHODS CloudService installed in ODS+GCP with AddOn flow
+#AUTOMATION_SETUP:
+#    RHODS:
+#        FLAVOUR: CloudService
+#        INSTALL: True
+#        INSTALL_METHOD: AddOn
 #        IMAGE_URL: NotApplicable
 #    CLUSTER:
 #        CREATE: True
@@ -56,11 +88,12 @@ AUTOMATION_TEARDOWN:
 #        DELETE: True
 #
 #
-## Example: RHODS Self-Managed on OpenStack (PSI)
+## Example: RHODS Self-Managed on OpenStack (PSI) with self-managed-installer script
 #AUTOMATION_SETUP:
 #    RHODS:
 #        FLAVOUR: SelfManaged
 #        INSTALL: True
+#        INSTALL_METHOD: SelfManagedInstaller
 #        IMAGE_URL: quay.io/modh/qe-catalog-source:latest
 #    CLUSTER:
 #        CREATE: True
@@ -80,12 +113,13 @@ AUTOMATION_TEARDOWN:
 #        HIBERNATE: False
 #        DELETE: True
 #
-## Example: RHODS Self-Managed on a OSD cluster
+## Example: RHODS Self-Managed on a OSD cluster with self-managed-installer script
 #PRODUCT: RHODS-SelfManaged
 #AUTOMATION_SETUP:
 #    RHODS:
 #        FLAVOUR: SelfManaged
 #        INSTALL: True
+#        INSTALL_METHOD: SelfManagedInstaller
 #        IMAGE_URL: quay.io/modh/qe-catalog-source:latest
 #    CLUSTER:
 #        CREATE: True
@@ -110,11 +144,12 @@ AUTOMATION_TEARDOWN:
 #        HIBERNATE: False
 #        DELETE: True
 #
-## Example: RHODS Self-Managed on a AWS cluster (not OSD)
+## Example: RHODS Self-Managed on a AWS cluster (not OSD) with self-managed-installer script
 #AUTOMATION_SETUP:
 #    RHODS:
 #        FLAVOUR: SelfManaged
 #        INSTALL: True
+#        INSTALL_METHOD: SelfManagedInstaller
 #        IMAGE_URL: quay.io/modh/qe-catalog-source:latest
 #    CLUSTER:
 #        CREATE: True
