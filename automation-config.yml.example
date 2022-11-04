@@ -23,6 +23,29 @@ AUTOMATION_SETUP:
             GPU_NODE_COUNT: 1
         OPENSHIFT_VERSION: 4.11-latest
         OPENSHIFT_CHANNEL_GROUP: stable
+# Example for a test execution
+EXECUTION_1:
+    TITLE: Smoke Quality Gate
+    DESCRIPTION: Runs the Smoke quality gate
+    ROBOT_PARAMS: -i Smoke
+    # Global variables will be added automatically to robot
+    # Option 1: generate a variablefile and run --variablefile execution-1-vars.yml
+    # Option 2: run the robot command defining the variables: --variable VAR1:value1  --variable VAR2:value2
+    ROBOT_VARS:
+        VAR1:value1
+        VAR2:value2
+        
+# Example for a task execution(UpgradeRHODS is a task)       
+EXECUTION_2:
+    TITLE: Upgrade RHODS
+    DESCRIPTION: Upgrades RHODS to version 1.18.XXX
+    ROBOT_PARAMS: -i UpgradeRHODS
+    # Global variables will be added automatically to robot
+    # Option 1: generate a variablefile and run --variablefile execution-1-vars.yml
+    # Option 2: run the robot command defining the variables: --variable VAR1:value1  --variable VAR2:value2
+    ROBOT_VARS:
+        RHODS_UPGRADE_TO_VERSION:1.18.XXX        
+        
 AUTOMATION_TEARDOWN:
     CLUSTER:
         HIBERNATE: False
