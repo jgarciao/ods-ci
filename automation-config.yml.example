@@ -1,5 +1,6 @@
 ## Example: RHODS CloudService installed in ODS+AWS with AddOn flow
-AUTOMATION_SETUP:
+PROVISIONING_SETUP:
+    ROBOT_PARAMS: --test-case ./tasks/Tasks/provisioning_setup.robot --include ProvisioningSetup --test-variables-file test-variables.yml
     RHODS:
         FLAVOUR: CloudService
         INSTALL: True
@@ -23,26 +24,50 @@ AUTOMATION_SETUP:
             GPU_NODE_COUNT: 1
         OPENSHIFT_VERSION: 4.11-latest
         OPENSHIFT_CHANNEL_GROUP: stable
-# Example for a test execution
+        
 EXECUTION_1:
     TITLE: Smoke Quality Gate
-    DESCRIPTION: Runs the Smoke quality gate
+    DESCRIPTION: Runs the Smoke quality gate    
     ROBOT_PARAMS: -i Smoke
-    # Variables below will be added automatically to test-variables.yml
+    # Variables below will be added automatically to test-variables-execution-1.yml before running the robot command
     ROBOT_VARS:
         VAR1:value1
         VAR2:value2
-        
-# Example for a task execution(UpgradeRHODS is a task)       
+    # Configure Jenkins integrations for this exectution
+    UPDATE_POLARION:False
+    UPDATE_CONFLUENCE:False
+    UPDATE_REPORT_PORTAL:False
+             
 EXECUTION_2:
     TITLE: Upgrade RHODS
     DESCRIPTION: Upgrades RHODS to version 1.18.XXX
     ROBOT_PARAMS: -i UpgradeRHODS
     # Variables below will be added automatically to test-variables.yml
     ROBOT_VARS:
-        RHODS_UPGRADE_TO_VERSION:1.18.XXX        
+        RHODS_UPGRADE_TO_VERSION:1.18.XXX    
+    # Configure Jenkins integrations for this exectution
+    UPDATE_POLARION:False
+    UPDATE_CONFLUENCE:False
+    UPDATE_REPORT_PORTAL:False
+           
+EXECUTION_3:
+    TITLE: Smoke Quality Gate
+    DESCRIPTION: Runs the Smoke quality gate
+    ROBOT_PARAMS: -i Smoke
+    # Variables below will be added automatically to test-variables-execution-1.yml before running the robot command
+    ROBOT_VARS:
+        VAR1:value1
+        VAR2:value2
+    # Configure Jenkins integrations for this exectution
+    UPDATE_POLARION:True
+    UPDATE_CONFLUENCE:True
+    UPDATE_REPORT_PORTAL:True
         
-AUTOMATION_TEARDOWN:
+# Leave EXECUTION_4 empty if nothing to do
+EXECUTION_4:
+        
+PROVISIONIG_TEARDOWN:
+    ROBOT_PARAMS: --test-case ./tasks/Tasks/provisioning_teardown.robot --include ProvisioningTeardown --test-variables-file automation-config.yml
     CLUSTER:
         HIBERNATE: False
         DELETE: True
