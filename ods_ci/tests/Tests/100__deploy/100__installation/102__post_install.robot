@@ -51,6 +51,25 @@ Verify Notebook Controller Deployment
     Verify Deployment  ${NBC}  1  1  ${containerNames}
     Verify Deployment  ${ONBC}  1  1  ${containerNames}
 
+Verify Data Science Pipelines Operator Is Shipped And Enabled In ODS
+    [Documentation]    Verifies that the Data Science Pipelines Operator is deployed,
+    ...    the registry where the operator's image is published and the existence
+    ...    of the DataSciencePipelineApplication CustomResource
+    [Tags]    Smoke
+    ...       Tier1
+    ...       ODS-2167
+    Verify Deployment Status  label=app.kubernetes.io/created-by=data-science-pipelines-operator
+    ...    dname=data-science-pipelines-operator-controller-manager
+
+    ${pod} =    Find First Pod By Name    namespace=redhat-ods-applications
+    ...    pod_start_with=data-science-pipelines-operator-controller-manager
+
+    Container Image Url Should Contain    redhat-ods-applications    ${pod}    manager
+    ...    registry.redhat.io/rhods/odh-data-science-pipelines-operator-controller-rhel8@sha256
+
+    OpenShiftLibrary.Oc Get  kind=CustomResourceDefinition
+    ...    name=datasciencepipelinesapplications.datasciencepipelinesapplications.opendatahub.io
+
 Verify GPU Operator Deployment  # robocop: disable
     [Documentation]  Verifies Nvidia GPU Operator is correctly installed
     [Tags]  Sanity
@@ -157,7 +176,8 @@ Verify That CUDA Build Chain Succeeds
     [Teardown]    CUDA Teardown
 
 Verify That Blackbox-exporter Is Protected With Auth-proxy
-    [Documentation]    Verifies the blackbok-exporter inludes 4 containers one for application,odh-notebook-controller,notebook-controller and data-science-pipelines each
+    [Documentation]    Verifies the blackbok-exporter inludes 4 containers one for application,
+    ...    odh-notebook-controller,notebook-controller and data-science-pipelines each
     [Tags]  Sanity
     ...     Tier1
     ...     ODS-1090
