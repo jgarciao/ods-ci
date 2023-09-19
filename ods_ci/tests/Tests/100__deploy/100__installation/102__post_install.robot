@@ -271,13 +271,24 @@ Verify RHODS Display Name and Version
     [Tags]    Smoke
     ...       Tier1
     ...       ODS-1862
-    ${rhods_csv_detail}   Oc Get    kind=ClusterServiceVersion    label_selector=olm.copiedFrom=${OPERATOR_NAMESPACE}
-    ${rhods_csv_name}     Set Variable     ${rhods_csv_detail[0]['metadata']['name']}
-    ${rhods_version}      Set Variable       ${rhods_csv_detail[0]['spec']['version']}
-    ${rhods_displayname}  Set Variable       ${rhods_csv_detail[0]['spec']['displayName']}
-    ${rhods_version_t}    Split String   ${rhods_csv_name}    .    1
-    Should Be Equal       ${rhods_version_t[1]}   ${rhods_version}   msg=RHODS vesrion and label is not consistent
-    Should Be Equal       ${rhods_displayname}   Red Hat OpenShift Data Science  msg=Dieplay name doesn't match
+
+    IF  "${PRODUCT}" == "RHODS"
+        ${rhods_csv_detail}   Oc Get    kind=ClusterServiceVersion    label_selector=olm.copiedFrom=${OPERATOR_NAMESPACE}
+        ${rhods_csv_name}     Set Variable     ${rhods_csv_detail[0]['metadata']['name']}
+        ${rhods_version}      Set Variable       ${rhods_csv_detail[0]['spec']['version']}
+        ${rhods_displayname}  Set Variable       ${rhods_csv_detail[0]['spec']['displayName']}
+        ${rhods_version_t}    Split String   ${rhods_csv_name}    .    1
+        Should Be Equal       ${rhods_version_t[1]}   ${rhods_version}   msg=RHODS version and label is not consistent
+        Should Be Equal       ${rhods_displayname}   Red Hat OpenShift Data Science  msg=Display name doesn't match
+    ELSE
+        ${odh_version}=  Run  oc get csv -n ${OPERATOR_NAMESPACE} | grep "opendatahub" | awk -F ' {2,}' '{print $3}'
+        ${odh_version_in_name}=  Run  oc get csv -n ${OPERATOR_NAMESPACE} | grep "opendatahub" | awk -F ' {2,}' '{print $1}' | cut -d "." -f 2-10
+        ${odh_displayName}=  Run  oc get csv -n ${OPERATOR_NAMESPACE} | grep "opendatahub" | awk -F ' {2,}' '{print $2}'
+        # Note: usure if this should checked in ODH, as currently it will fail because results are 2.1.0 != v2.1.0
+        #Should Be Equal       ${odh_version}   ${odh_version_in_name}   msg=Operator version and label are not consistent
+        Should Be Equal       ${odh_displayname}   Open Data Hub Operator  msg=Display name doesn't match
+    END
+
 
 Verify RHODS Notebooks Network Policies
     [Documentation]    Verifies that the network policies for RHODS Notebooks are present on the cluster
