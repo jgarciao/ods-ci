@@ -95,8 +95,7 @@ Logout From RHODS Dashboard
 Wait for RHODS Dashboard to Load
     [Arguments]  ${dashboard_title}="${ODH_DASHBOARD_PROJECT_NAME}"    ${wait_for_cards}=${TRUE}
     ...          ${expected_page}=Enabled
-
-    Wait For Condition    return document.title == ${dashboard_title}    timeout=15s
+    Wait For Condition    return document.title == ${dashboard_title}    timeout=30s
     Wait Until Page Contains Element    xpath:${RHODS_LOGO_XPATH}    timeout=20s
     IF    "${expected_page}" != "${NONE}"
         Wait Until Page Contains Element    xpath://h1[text()="${expected_page}"]

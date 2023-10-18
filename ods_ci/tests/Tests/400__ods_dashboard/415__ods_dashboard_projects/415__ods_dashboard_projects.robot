@@ -43,7 +43,7 @@ ${DC_S3_AWS_ACCESS_KEY}=    custom dummy access key id
 ${DC_S3_ENDPOINT}=    custom.endpoint.s3.com
 ${DC_S3_REGION}=    ods-ci-region
 ${DC_S3_TYPE}=    Object storage
-@{IMAGE_LIST}    Minimal Python    CUDA   PyTorch    Standard Data Science    TensorFlow
+@{WORKBENCH_IMAGE_MULTIPLE_VERSIONS_LIST}    Minimal Python    CUDA   PyTorch    Standard Data Science    TensorFlow
 ${ENV_SECRET_FILEPATH}=    ods_ci/tests/Resources/Files/env_vars_secret.yaml
 ${ENV_CM_FILEPATH}=    ods_ci/tests/Resources/Files/env_vars_cm.yaml
 ${NEW_PRJ_DESCRIPTION}=   ${PRJ_TITLE} is a New edited test project for validating DS Projects feature
@@ -81,7 +81,7 @@ Verify Workbench Images Have Multiple Versions
     Click Element    ${WORKBENCH_CREATE_BTN_XP}
     Wait Until Page Contains Element    ${WORKBENCH_NAME_INPUT_XP}
     Run Keyword And Continue On Failure     Element Should Be Disabled    ${WORKBENCH_CREATE_BTN_2_XP}
-    FOR    ${img}    IN    @{IMAGE_LIST}
+    FOR    ${img}    IN    @{WORKBENCH_IMAGE_MULTIPLE_VERSIONS_LIST}
         Select Workbench Jupyter Image    image_name=${img}    version=previous
         Select Workbench Jupyter Image    image_name=${img}    version=default
     END

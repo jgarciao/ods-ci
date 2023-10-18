@@ -6,3 +6,10 @@ ODH_DASHBOARD_PROJECT_NAME: Open Data Hub
 
 # ods_ci/tests/Tests/100__deploy/100__installation/102__post_install.robot
 OPERATOR_DISPLAY_NAME: Open Data Hub Operator
+
+# ods_ci/tests/Tests/400__ods_dashboard/415__ods_dashboard_projects/415__ods_dashboard_projects
+WORKBENCH_IMAGE_MULTIPLE_VERSIONS_LIST:
+- Minimal Python
+- Jupyter Data Science
+- CUDA
+- TensorFlow

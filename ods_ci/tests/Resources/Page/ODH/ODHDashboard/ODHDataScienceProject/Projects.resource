@@ -78,7 +78,7 @@ Is Data Science Project Details Page Open
     [Arguments]     ${project_title}
     ${page_open}=   Run Keyword And Return Status
     ...    SeleniumLibrary.Page Should Contain Element     xpath=//h1[contains(text(),"${project_title}")]
-    [Return]    ${page_open}   
+    [Return]    ${page_open}
 
 Wait Until Project Is Open
     [Documentation]    Waits until a DS Project Details page is laoded

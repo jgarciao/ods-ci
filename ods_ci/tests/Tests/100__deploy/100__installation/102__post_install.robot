@@ -308,7 +308,7 @@ Verify RHODS Notebooks Network Policies
     Should Be Equal As Strings    ${policy_ctrl}    ${expected_policy_ctrl}    msg=Unexpected notebook ctrl network policy
     ${policy_oauth} =    Run
     ...    oc get networkpolicy ${CR_name}-oauth-np -n ${NOTEBOOKS_NAMESPACE} -o json | jq '.spec.ingress[0]'
-    ${expected_policy_oauth} =    Get File    ods_ci/tests/Resources/Files/expected_oauth_np.txt
+    ${expected_policy_oauth} =    Get File    ods_ci/tests/Resources/Files/${PRODUCT}/expected_oauth_np.txt
     Should Be Equal As Strings    ${policy_oauth}    ${expected_policy_oauth}    msg=Unexpected notebook oauth network policy
 
 Verify All The Pods Are Using Image Digest Instead Of Tags
