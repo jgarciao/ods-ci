@@ -14,6 +14,8 @@ Library             SeleniumLibrary
 Suite Setup         Billing Metrics Suite Setup
 Suite Teardown      RHOSi Teardown
 
+Test Tags           ExcludeOnODH
+
 
 *** Variables ***
 ${METRIC_RHODS_CPU}                 cluster:usage:consumption:rhods:cpu:seconds:rate1h

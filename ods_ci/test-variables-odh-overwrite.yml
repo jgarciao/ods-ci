@@ -1,3 +1,8 @@
 # Overwrite here values for local variables defined in test suites
 # in order to make them compatible with ODH
+
+# ods_ci/tests/Resources/Page/ODH/ODHDashboard/ODHDashboard.robot
 ODH_DASHBOARD_PROJECT_NAME: Open Data Hub
+
+# ods_ci/tests/Tests/100__deploy/100__installation/102__post_install.robot
+OPERATOR_DISPLAY_NAME: Open Data Hub Operator

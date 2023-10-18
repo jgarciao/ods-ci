@@ -17,6 +17,10 @@ Suite Setup         RHOSi Setup
 Suite Teardown      RHOSi Teardown
 
 
+*** Variables ***
+${OPERATOR_DISPLAY_NAME}    Red Hat OpenShift Data Science
+
+
 *** Test Cases ***
 Verify Dashbord has no message with NO Component Found
     [Tags]  Tier3
@@ -271,24 +275,24 @@ Verify RHODS Display Name and Version
     [Tags]    Smoke
     ...       Tier1
     ...       ODS-1862
-
     IF  "${PRODUCT}" == "RHODS"
-        ${rhods_csv_detail}   Oc Get    kind=ClusterServiceVersion    label_selector=olm.copiedFrom=${OPERATOR_NAMESPACE}
-        ${rhods_csv_name}     Set Variable     ${rhods_csv_detail[0]['metadata']['name']}
-        ${rhods_version}      Set Variable       ${rhods_csv_detail[0]['spec']['version']}
-        ${rhods_displayname}  Set Variable       ${rhods_csv_detail[0]['spec']['displayName']}
-        ${rhods_version_t}    Split String   ${rhods_csv_name}    .    1
-        Should Be Equal       ${rhods_version_t[1]}   ${rhods_version}   msg=RHODS version and label is not consistent
-        Should Be Equal       ${rhods_displayname}   Red Hat OpenShift Data Science  msg=Display name doesn't match
+         ${rhods_csv_detail}   Oc Get    kind=ClusterServiceVersion
+         ...    label_selector=olm.copiedFrom=${OPERATOR_NAMESPACE}
+         ${rhods_csv_name}     Set Variable     ${rhods_csv_detail[0]['metadata']['name']}
+         ${rhods_version}      Set Variable       ${rhods_csv_detail[0]['spec']['version']}
+         ${rhods_displayname}  Set Variable       ${rhods_csv_detail[0]['spec']['displayName']}
+         ${rhods_version_t}    Split String   ${rhods_csv_name}    .    1
+         Should Be Equal       ${rhods_version_t[1]}   ${rhods_version}
+         ...    msg=Operator version and label are not consistent
+         Should Be Equal       ${rhods_displayname}   ${OPERATOR_DISPLAY_NAME}  msg=Unexpected Operator Display name
     ELSE
-        ${odh_version}=  Run  oc get csv -n ${OPERATOR_NAMESPACE} | grep "opendatahub" | awk -F ' {2,}' '{print $3}'
-        ${odh_version_in_name}=  Run  oc get csv -n ${OPERATOR_NAMESPACE} | grep "opendatahub" | awk -F ' {2,}' '{print $1}' | cut -d "." -f 2-10
-        ${odh_displayName}=  Run  oc get csv -n ${OPERATOR_NAMESPACE} | grep "opendatahub" | awk -F ' {2,}' '{print $2}'
-        # Note: usure if this should checked in ODH, as currently it will fail because results are 2.1.0 != v2.1.0
-        #Should Be Equal       ${odh_version}   ${odh_version_in_name}   msg=Operator version and label are not consistent
-        Should Be Equal       ${odh_displayname}   Open Data Hub Operator  msg=Display name doesn't match
+         ${odh_version}=  Run  oc get csv -n ${OPERATOR_NAMESPACE} | grep "opendatahub" | awk -F ' {2,}' '{print $3}'
+         ${odh_version_in_name}=  Run  oc get csv -n ${OPERATOR_NAMESPACE} | grep "opendatahub" | awk -F ' {2,}' '{print $1}' | cut -d "." -f 2-10
+         ${odh_displayName}=  Run  oc get csv -n ${OPERATOR_NAMESPACE} | grep "opendatahub" | awk -F ' {2,}' '{print $2}'
+         # Note: usure if this should checked in ODH, as currently it will fail because results are 2.1.0 != v2.1.0
+         #Should Be Equal       ${odh_version}   ${odh_version_in_name}   msg=Operator version and label are not consistent
+         Should Be Equal       ${odh_displayname}   ${OPERATOR_DISPLAY_NAME}  msg=Unexpected Operator Display name
     END
-
 
 Verify RHODS Notebooks Network Policies
     [Documentation]    Verifies that the network policies for RHODS Notebooks are present on the cluster
@@ -299,22 +303,20 @@ Verify RHODS Notebooks Network Policies
     ${CR_name} =    Get User CR Notebook Name    username=${TEST_USER.USERNAME}
     ${policy_ctrl} =    Run
     ...    oc get networkpolicy ${CR_name}-ctrl-np -n ${NOTEBOOKS_NAMESPACE} -o json | jq '.spec.ingress[0]'
-    ${expected_policy_ctrl} =    Get File    ods_ci/tests/Resources/Files/expected_ctrl_np.txt
-    Should Be Equal As Strings    ${policy_ctrl}    ${expected_policy_ctrl}
-    Log    ${policy_ctrl}
-    Log    ${expected_policy_ctrl}
+    ${expected_policy_ctrl} =    Get File    ods_ci/tests/Resources/Files/${PRODUCT}/expected_ctrl_np.txt
+    ${expected_policy_ctrl} =    Strip String    ${expected_policy_ctrl}
+    Should Be Equal As Strings    ${policy_ctrl}    ${expected_policy_ctrl}    msg=Unexpected notebook ctrl network policy
     ${policy_oauth} =    Run
     ...    oc get networkpolicy ${CR_name}-oauth-np -n ${NOTEBOOKS_NAMESPACE} -o json | jq '.spec.ingress[0]'
     ${expected_policy_oauth} =    Get File    ods_ci/tests/Resources/Files/expected_oauth_np.txt
-    Should Be Equal As Strings    ${policy_oauth}    ${expected_policy_oauth}
-    Log    ${policy_oauth}
-    Log    ${expected_policy_oauth}
+    Should Be Equal As Strings    ${policy_oauth}    ${expected_policy_oauth}    msg=Unexpected notebook oauth network policy
 
 Verify All The Pods Are Using Image Digest Instead Of Tags
     [Documentation]    Verifies that the all the rhods pods are using image digest
     [Tags]    Smoke
     ...       Tier1
     ...       ODS-2406
+    ...       ExcludeOnODH
     ${return_code}    ${output} =    Run And Return Rc And Output    oc get ns -l opendatahub.io/generated-namespace -o jsonpath='{.items[*].metadata.name}' ; echo ; oc get ns -l opendatahub.io/dashboard -o jsonpath='{.items[*].metadata.name}'  # robocop: disable
     Should Be Equal As Integers	 ${return_code}	 0  msg=Error getting the namespace using label
     ${projects_list} =    Split String    ${output}

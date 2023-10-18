@@ -116,6 +116,7 @@ Verify CSS Style Of Getting Started Descriptions
     [Tags]    Smoke
     ...       Tier1
     ...       ODS-1165
+    ...       ExcludeOnODH
     Click Link    Explore
     Wait For RHODS Dashboard To Load    expected_page=Explore
     Open Get Started Sidebar And Return Status    card_locator=${SAMPLE_APP_CARD_XP}

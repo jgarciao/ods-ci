@@ -1,0 +1,17 @@
+{
+  "from": [
+    {
+      "namespaceSelector": {
+        "matchLabels": {
+          "kubernetes.io/metadata.name": "opendatahub"
+        }
+      }
+    }
+  ],
+  "ports": [
+    {
+      "port": 8888,
+      "protocol": "TCP"
+    }
+  ]
+}
