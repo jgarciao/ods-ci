@@ -7,6 +7,7 @@ Resource            ../../../Resources/RHOSi.resource
 
 Suite Setup         Pachyderm Suite Setup
 Suite Teardown      Pachyderm Suite Teardown
+Test Tags           ExcludeOnODH
 
 
 *** Variables ***

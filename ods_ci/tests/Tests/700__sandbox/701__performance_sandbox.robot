@@ -8,6 +8,8 @@ Library         OpenShiftLibrary
 Library         ../../../libs/Helpers.py
 Resource        ../../Resources/Page/OCPDashboard/OCPDashboard.resource
 Suite Setup     Performance Suite Setup
+Test Tags       ExcludeOnODH
+
 
 *** Variables ***
 ${NAMESPACE}     openshift-kube-apiserver

@@ -5,7 +5,7 @@ Resource            ../../../Resources/ODS.robot
 Resource            ../../../Resources/Common.robot
 Suite Setup         RHOSi Setup
 Suite Teardown      RHOSi Teardown
-
+Test Tags           ExcludeOnODH
 
 *** Variables ***
 @{serh_querys}   node_namespace_pod_container:container_memory_working_set_bytes{namespace="redhat-starburst-operator"}

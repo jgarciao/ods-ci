@@ -4,7 +4,8 @@ Resource         ../../../Resources/Page/ODH/AiApps/ManagedStarburst.resource
 Resource         ../../../Resources/Page/LoginPage.robot
 Resource         ../../../../tasks/Resources/SERH_OLM/install.resource
 Suite Setup      Starburst Setup Suite
-Suite Teardown    RHOSi Teardown
+Suite Teardown   RHOSi Teardown
+Test Tags        ExcludeOnODH
 
 
 *** Variables ***

@@ -9,6 +9,7 @@ Suite Teardown      RHOSi Teardown
 Test Setup          Begin Metrics Web Test
 Test Teardown       End Metrics Web Test
 
+Test Tags           ExcludeOnODH
 
 *** Variables ***
 @{RECORD_GROUPS}    Availability Metrics    SLOs - ODH Dashboard

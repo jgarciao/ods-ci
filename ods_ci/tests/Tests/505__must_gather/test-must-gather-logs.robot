@@ -8,6 +8,7 @@ Verify that the must-gather image provides RHODS logs and info
       ...      Tier1
       ...      ODS-505
       ...      Upgrade
+      ...      ExcludeOnODH
       Get must-gather logs
       Verify logs for ${APPLICATIONS_NAMESPACE}
       Verify logs for redhat-ods-operator

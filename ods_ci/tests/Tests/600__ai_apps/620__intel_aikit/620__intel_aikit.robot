@@ -8,12 +8,15 @@ Resource        ../../../Resources/RHOSi.resource
 Library         SeleniumLibrary
 Suite Setup     Intel_Aikit Suite Setup
 Suite Teardown  Intel_Aikit Suite Teardown
+Test Tags       ExcludeOnODH
+
 
 *** Variables ***
 ${intel_aikit_appname}           aikit
 ${intel_aikit_container_name}    Intel® oneAPI AI Analytics Toolkit Container
 ${intel_aikit_operator_name}    Intel® oneAPI AI Analytics Toolkit Operator
 ${image_path}                   image-registry.openshift-image-registry.svc:5000/${APPLICATIONS_NAMESPACE}
+
 
 *** Test Cases ***
 Verify Intel AIKIT Is Available In RHODS Dashboard Explore Page

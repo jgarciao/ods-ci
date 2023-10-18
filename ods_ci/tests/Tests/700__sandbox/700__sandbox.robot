@@ -7,7 +7,7 @@ Library         String
 Library         SeleniumLibrary
 Suite Setup     Begin Web Test
 Suite Teardown  End Web Test
-
+Test Tags       ExcludeOnODH
 
 *** Test Cases ***
 Verify Application Switcher Have Only OpenShift Console Link

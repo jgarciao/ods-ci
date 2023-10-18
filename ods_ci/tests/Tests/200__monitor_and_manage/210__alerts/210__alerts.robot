@@ -13,6 +13,8 @@ Library             JupyterLibrary
 Suite Setup         Alerts Suite Setup
 Suite Teardown      Alerts Suite Teardown
 
+Test Tags           ExcludeOnODH
+
 
 *** Variables ***
 ${NOTEBOOK_REPO_URL}                    https://github.com/redhat-rhods-qe/ods-ci-notebooks-main
