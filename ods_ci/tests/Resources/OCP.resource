@@ -64,7 +64,7 @@ Is RHODS Self-Managed
     [Documentation]     Returns ${FALSE} if RHODS Managed (i.e., Cloud version) is installed
     ...                 in the cluster (e.g., usually on OSD, ROSA).
     ...                 Returns ${TRUE} if RHODS Self-Managed is installed or if PRODUCT=ODH
-    IF  "${PRODUCT}" == "ODH"  RETURN     ${FALSE}
+    IF  "${PRODUCT}" == "ODH"  RETURN     ${TRUE}
     ${is_managed} =    Run Keyword And Return Status    OpenshiftLibrary.Oc Get
     ...                                                      kind=CatalogSource
     ...                                                      name=addon-managed-odh-catalog
