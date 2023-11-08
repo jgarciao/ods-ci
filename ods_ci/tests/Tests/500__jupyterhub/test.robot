@@ -5,9 +5,10 @@ Resource         ../../Resources/Common.robot
 Resource         ../../Resources/Page/ODH/JupyterHub/JupyterHubSpawner.robot
 Resource         ../../Resources/Page/ODH/JupyterHub/JupyterHubSpawner.robot
 Resource         ../../Resources/Page/ODH/ODHDashboard/ODHDashboard.robot
+Resource         ../../Resources/Page/ODH/ODHDashboard/ODHDataScienceProject/Projects.resource
 Suite Setup      JupyterHub Testing Suite Setup
 Suite Teardown   End Web Test
-Test Tags        JupyterHub        AutomationBugOnODH
+Test Tags        JupyterHub
 
 
 *** Variables ***
@@ -19,18 +20,25 @@ Logged Into OpenShift
     [Tags]   Sanity    Smoke
     ...      Tier1
     ...      ODS-127
-    Open OCP Console
-    Login To Openshift  ${TEST_USER.USERNAME}  ${TEST_USER.PASSWORD}  ${TEST_USER.AUTH_TYPE}
-    Wait Until OpenShift Console Is Loaded
+    IF  "${PRODUCT}" == "RHODS"
+        Open OCP Console
+        Login To Openshift  ${TEST_USER.USERNAME}  ${TEST_USER.PASSWORD}  ${TEST_USER.AUTH_TYPE}
+        Wait Until OpenShift Console Is Loaded
+    END
+
 
 Can Launch Jupyterhub
     [Tags]   Sanity    Smoke
     ...      Tier1
     ...      ODS-935
     #This keyword will work with accounts that are not cluster admins.
-    Launch RHODS Via OCP Application Launcher
-    Login To RHODS Dashboard  ${TEST_USER.USERNAME}  ${TEST_USER.PASSWORD}  ${TEST_USER.AUTH_TYPE}
-    Wait for RHODS Dashboard to Load
+    IF  "${PRODUCT}" == "RHODS"
+        Launch RHODS Via OCP Application Launcher
+        Login To RHODS Dashboard  ${TEST_USER.USERNAME}  ${TEST_USER.PASSWORD}  ${TEST_USER.AUTH_TYPE}
+        Wait for RHODS Dashboard to Load
+    ELSE
+        Launch Data Science Project Main Page
+    END
     Launch Jupyter From RHODS Dashboard Link
 
 Can Login To Jupyterhub
