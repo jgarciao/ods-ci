@@ -68,7 +68,7 @@ pythonPlatform = "Linux"
 # https://docs.astral.sh/ruff/configuration
 [tool.ruff]
 include = ["pyproject.toml", "ods_ci/**/*.py"]
-exclude = ["ods_ci/tests/Resources/Files/pipeline-samples/"]
+exclude = ["ods_ci/tests/Resources/Files/pipeline-samples/", "ods_ci/utils/scripts/sealights/"]
 target-version = "py311"
 line-length = 120
 
