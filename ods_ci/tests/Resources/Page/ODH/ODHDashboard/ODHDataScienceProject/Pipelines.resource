@@ -27,7 +27,7 @@ Create Pipeline Server    # robocop: off=too-many-calls-in-keyword
     # Every 2 mins the frontend updates its cache and the client polls every 30seconds.
     # So the longest you’d have to wait is 2.5 mins. Set 3 min just to make sure
     Projects.Move To Tab    Pipelines
-    Wait Until Page Contains Element    ${PIPELINES_SERVER_BTN_XP}    timeout=180s
+    Wait Until Element Is Visible    ${PIPELINES_SERVER_BTN_XP}    timeout=180s
     Element Should Be Enabled    ${PIPELINES_SERVER_BTN_XP}
     Click Button    ${PIPELINES_SERVER_BTN_XP}
     Wait Until Generic Modal Appears
@@ -44,9 +44,9 @@ Select Data Connection
     ...                in the modal for Pipeline Server creation
     [Arguments]    ${dc_name}
     # robocop: off=line-too-long
-    Wait Until Page Contains Element    xpath://button[@data-testid="select-data-connection"]
-    Click Button                        xpath://button[@data-testid="select-data-connection"]
-    Wait Until Page Contains Element    xpath://button//*[text()="${dc_name}"]
+    Wait Until Element Is Visible    xpath://button[@data-testid="select-data-connection"]
+    Click Button                     xpath://button[@data-testid="select-data-connection"]
+    Wait Until Element Is Visible    xpath://button//*[text()="${dc_name}"]
     Click Element    xpath://button//*[text()="${dc_name}"]
 
 Wait Until Pipeline Is Not Listed
@@ -72,7 +72,8 @@ Import Pipeline
     END
     Wait Until Generic Modal Disappears
     Maybe Wait For Dashboard Loading Spinner Page     timeout=45s
-    Wait For Dashboard Page Title    ${name}    timeout=30s
+    Wait Until Keyword Succeeds    3 times    10s
+    ...    Wait For Dashboard Page Title    ${name}    timeout=30s
 
 Create Pipeline Run
     [Documentation]    Create a pipeline run from DS Project details page.
@@ -132,10 +133,10 @@ Click Action From Pipeline Actions Menu
     ${pipeline_row_xp}=    Set Variable    //*[@data-testid="table-row-title"]//span[text()="${pipeline_name}"]/ancestor::tr
     ${kebab_xp}=           Set Variable    ${pipeline_row_xp}/td/button[@aria-label="Kebab toggle"]
     ${kebap_action_xp}=    Set Variable    ${pipeline_row_xp}/td/div/div/ul/li/button[.//*[contains(text(), '${action}')]]
-    Wait Until Page Contains Element    ${kebab_xp}
-    Click Element                       ${kebab_xp}
-    Wait Until Page Contains Element    ${kebap_action_xp}
-    Click Element                       ${kebap_action_xp}
+    Wait Until Element Is Visible     ${kebab_xp}
+    Click Element                     ${kebab_xp}
+    Wait Until Element Is Visible     ${kebap_action_xp}
+    Click Element                     ${kebap_action_xp}
 
 Click Action From Pipeline Version Actions Menu
     [Documentation]    Click an action from Pipeline Version Actions menu (3-dots menu on the right)
@@ -144,10 +145,10 @@ Click Action From Pipeline Version Actions Menu
     ${version_row_xp}=    Set Variable     //*[@data-testid="table-row-title"]/span/a[contains(text(),"${pipeline_version_name_contains}")]/ancestor::tr
     ${kebab_xp}=           Set Variable    ${version_row_xp}/td/button[@aria-label="Kebab toggle"]
     ${kebap_action_xp}=    Set Variable    ${version_row_xp}/td/div/div/ul/li/button[.//*[contains(text(), '${action}')]]
-    Wait Until Page Contains Element    ${kebab_xp}
-    Click Element                       ${kebab_xp}
-    Wait Until Page Contains Element    ${kebap_action_xp}
-    Click Element                       ${kebap_action_xp}
+    Wait Until Element Is Visible     ${kebab_xp}
+    Click Element                     ${kebab_xp}
+    Wait Until Element Is Visible     ${kebap_action_xp}
+    Click Element                     ${kebap_action_xp}
 
 Click Action From Pipeline Run Actions Menu
     [Documentation]    In Data Science Pipelines > Runs, click an action from Actions menu (3-dots menu on the right)
@@ -156,10 +157,10 @@ Click Action From Pipeline Run Actions Menu
     ${pipeline_run_row_xp}=    Set Variable    //span[contains(text(),"${pipeline_run_name}")]/../../../..
     ${kebab_xp}=               Set Variable    ${pipeline_run_row_xp}/td/button[@aria-label="Kebab toggle"]
     ${kebap_action_xp}=        Set Variable    ${pipeline_run_row_xp}/td/div/div/ul/li/button[.//*[contains(text(), '${action}')]]
-    Wait Until Page Contains Element    ${kebab_xp}
-    Click Element                       ${kebab_xp}
-    Wait Until Page Contains Element    ${kebap_action_xp}
-    Click Element                       ${kebap_action_xp}
+    Wait Until Element Is Visible     ${kebab_xp}
+    Click Element                     ${kebab_xp}
+    Wait Until Element Is Visible     ${kebap_action_xp}
+    Click Element                     ${kebap_action_xp}
 
 Pipeline Context Menu Should Be Working
     [Documentation]   Test Pipeline YAML context menu works with mouse right-click and with keyboard
@@ -180,7 +181,7 @@ Pipeline Yaml Should Be Readonly
     [Arguments]    ${pipeline_name}
     ${orig wait}=    SeleniumLibrary.Set Selenium Implicit Wait    10s
     Menu.Navigate To Page    Data Science Pipelines
-    Wait Until Element Is Visible     //a[text()="${pipeline_name}"]          timeout=30s
+    Wait Until Element Is Visible    //a[text()="${pipeline_name}"]          timeout=30s
     Click Link      ${pipeline_name}
     Click Element     //button[@aria-label="Pipeline YAML Tab"]
     Press Keys    //div[contains(@class, 'lines-content')]    cannot_enter_read_only
@@ -254,14 +255,14 @@ Wait Until Pipeline Last Run Is Started
     [Arguments]    ${pipeline_name}    ${timeout}=60s
 
     ${pipeline_row_xp}=    Set Variable    ${PIPELINES_TABLE_XP}/tbody/tr/td/h2[text()="${pipeline_name}"]/../..
-    Wait Until Page Contains Element    ${pipeline_row_xp}//td/div[text()="Running"]
+    Wait Until Element Is Visible    ${pipeline_row_xp}//td/div[text()="Running"]
     ...    timeout=${timeout}
 
 Wait Until Pipeline Run Is Started
     [Documentation]    Waits until a pipeline run has the text "Just now" in the Started column.
     ...                View: Data Science Pipelines -> Runs, Triggered tab
     [Arguments]    ${pipeline_name}    ${timeout}=60s
-    Wait Until Page Contains Element    //td[@data-label="Name"]//span[contains(text(), "${pipeline_name}")]/ancestor::tr//td[@data-label="Created"]//time[text()="Just now"]
+    Wait Until Element Is Visible    //td[@data-label="Name"]//span[contains(text(), "${pipeline_name}")]/ancestor::tr//td[@data-label="Created"]//time[text()="Just now"]
     ...    timeout=${timeout}
 
 Wait Until Page Contains Run Topology Page
@@ -297,7 +298,7 @@ Verify Successful Pipeline Run Via Pipelines Runs UI
     ...                View: Data Science Pipelines -> Runs, Triggered tab
     [Arguments]    ${pipeline_name}
     Menu.Navigate To Page    Data Science Pipelines
-    Wait Until Page Contains Element    xpath://span[text()='Triggered']   timeout=10s
+    Wait Until Element Is Visible    xpath://span[text()='Triggered']   timeout=10s
     Click Element    //span[text()='Active']
     Wait Until Pipeline Run Is Started    pipeline_name=${pipeline_name}
     ...    timeout=10s
