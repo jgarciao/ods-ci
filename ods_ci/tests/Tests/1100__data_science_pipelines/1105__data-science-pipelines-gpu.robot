@@ -65,7 +65,7 @@ Verify Pipeline Tasks Run On GPU Nodes Only When Tolerations Are Added
 Dsp Gpu Suite Setup
     [Documentation]    Dsp Acceptance Suite Setup
     RHOSi Setup
-    Projects.Create Data Science Project From CLI    ${PROJECT}
+    Projects.Create Data Science Project From CLI    ${PROJECT}    as_user=${TEST_USER.USERNAME}
     DataSciencePipelinesBackend.Create Pipeline Server    namespace=${PROJECT}
     ...    object_storage_access_key=${S3.AWS_ACCESS_KEY_ID}
     ...    object_storage_secret_key=${S3.AWS_SECRET_ACCESS_KEY}
