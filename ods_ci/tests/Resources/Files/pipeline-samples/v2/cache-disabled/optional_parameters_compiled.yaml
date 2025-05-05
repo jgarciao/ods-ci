@@ -1,0 +1,168 @@
+# PIPELINE DEFINITION
+# Name: test-optional-parameters
+# Description: A pipeline testing optional parameters
+# Inputs:
+#    explicit_optional_input: str
+#    implicit_optional_input: str
+#    non_optional_input: str
+components:
+  comp-test-explicit-optional:
+    executorLabel: exec-test-explicit-optional
+    inputDefinitions:
+      parameters:
+        optional_input:
+          isOptional: true
+          parameterType: STRING
+  comp-test-implicit-optional:
+    executorLabel: exec-test-implicit-optional
+    inputDefinitions:
+      parameters:
+        optional_input:
+          isOptional: true
+          parameterType: STRING
+  comp-test-non-optional:
+    executorLabel: exec-test-non-optional
+    inputDefinitions:
+      parameters:
+        non_optional_input:
+          parameterType: STRING
+deploymentSpec:
+  executors:
+    exec-test-explicit-optional:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - test_explicit_optional
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.12.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef test_explicit_optional(optional_input: Optional[str] = None):\
+          \  # noqa:  UP007\n    \"\"\"\n    Test explicit optional using typing.Optional\n\
+          \    More info at https://docs.astral.sh/ruff/rules/implicit-optional/\n\
+          \    :param optional_input:\n    :return:\n    \"\"\"\n    print(optional_input)\n\
+          \n"
+        image: registry.redhat.io/ubi8/python-39@sha256:3523b184212e1f2243e76d8094ab52b01ea3015471471290d011625e1763af61
+    exec-test-implicit-optional:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - test_implicit_optional
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.12.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef test_implicit_optional(optional_input: str = None):  # noqa:\
+          \  RUF013\n    print(optional_input)\n\n"
+        image: registry.redhat.io/ubi8/python-39@sha256:3523b184212e1f2243e76d8094ab52b01ea3015471471290d011625e1763af61
+    exec-test-non-optional:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - test_non_optional
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.12.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef test_non_optional(non_optional_input: str):\n    print(non_optional_input)\n\
+          \n"
+        image: registry.redhat.io/ubi8/python-39@sha256:3523b184212e1f2243e76d8094ab52b01ea3015471471290d011625e1763af61
+pipelineInfo:
+  description: A pipeline testing optional parameters
+  name: test-optional-parameters
+root:
+  dag:
+    tasks:
+      test-explicit-optional:
+        cachingOptions: {}
+        componentRef:
+          name: comp-test-explicit-optional
+        inputs:
+          parameters:
+            optional_input:
+              componentInputParameter: explicit_optional_input
+        taskInfo:
+          name: test-explicit-optional
+      test-implicit-optional:
+        cachingOptions: {}
+        componentRef:
+          name: comp-test-implicit-optional
+        inputs:
+          parameters:
+            optional_input:
+              componentInputParameter: implicit_optional_input
+        taskInfo:
+          name: test-implicit-optional
+      test-non-optional:
+        cachingOptions: {}
+        componentRef:
+          name: comp-test-non-optional
+        inputs:
+          parameters:
+            non_optional_input:
+              componentInputParameter: non_optional_input
+        taskInfo:
+          name: test-non-optional
+  inputDefinitions:
+    parameters:
+      explicit_optional_input:
+        isOptional: true
+        parameterType: STRING
+      implicit_optional_input:
+        isOptional: true
+        parameterType: STRING
+      non_optional_input:
+        parameterType: STRING
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.12.1
