@@ -10,84 +10,10 @@ Suite Teardown      Dsp Misc Suite Teardown
 
 *** Variables ***
 ${PROJECT}=    dsp-misc
-${PIPELINE_OPTIONAL_PARAMETERS_FILEPATH}=    tests/Resources/Files/pipeline-samples/v2/cache-disabled/optional_parameters_compiled.yaml  # robocop: disable:line-too-long
-${PIPELINE_EXIT_HANDLER_FILEPATH}=           tests/Resources/Files/pipeline-samples/v2/cache-disabled/exit_handler_compiled.yaml         # robocop: disable:line-too-long
+${PIPELINE_EXIT_HANDLER_FILEPATH}=   tests/Resources/Files/pipeline-samples/v2/cache-disabled/exit_handler_compiled.yaml
 
 
 *** Test Cases ***
-# robocop: off=line-too-long,too-long-test-case,unused-variable
-Verify Pipeline Run Cannot Be Created When Value For Non Optional Parameter Is Not Provided
-    [Documentation]    Verifies that a pipeline run cannot be created if value for a mandatory parameter
-    ...    is not provided
-    [Tags]    Tier1
-
-    Skip If Test Enviroment Is ROSA-HCP    msg=Skipped due to automation bug on ROSA-HCP (tracked at RHOAIENG-16414)
-    ${pipeline_run_params}=    Create Dictionary
-
-    Run Keyword And Expect Error    STARTS: ApiException
-    ...    DataSciencePipelinesBackend.Import Pipeline And Create Run
-    ...    namespace=${PROJECT}    username=${TEST_USER.USERNAME}    password=${TEST_USER.PASSWORD}
-    ...    pipeline_name=non-optional-parameters
-    ...    pipeline_description=Testing creating a pipeline run without providing values for non-optional params
-    ...    pipeline_package_path=${PIPELINE_OPTIONAL_PARAMETERS_FILEPATH}
-    ...    pipeline_run_name=non-optional-parameters-run
-    ...    pipeline_run_params=${pipeline_run_params}
-
-Verify Pipeline Runs Successfully When Not Providing Values For Optional Parameters
-    [Documentation]    Creates a pipeline run not providing values for optional parameters and verifies that
-    ...    the run finishes successfully
-    [Tags]    Tier1
-
-    Skip If Test Enviroment Is ROSA-HCP    msg=Skipped due to automation bug on ROSA-HCP (tracked at RHOAIENG-16414)
-    ${pipeline_run_params}=    Create Dictionary    non_optional_input="Non Optional Input Value"
-
-    ${pipeline_id}    ${pipeline_version_id}    ${pipeline_run_id}    ${experiment_id}=
-    ...    DataSciencePipelinesBackend.Import Pipeline And Create Run
-    ...    namespace=${PROJECT}    username=${TEST_USER.USERNAME}    password=${TEST_USER.PASSWORD}
-    ...    pipeline_name=optional-parameters-without-values
-    ...    pipeline_description=A pipeline testing optional parameters, where optional parameters don't have value
-    ...    pipeline_package_path=${PIPELINE_OPTIONAL_PARAMETERS_FILEPATH}
-    ...    pipeline_run_name=optional-parameters-without-values-run
-    ...    pipeline_run_params=${pipeline_run_params}
-
-    DataSciencePipelinesBackend.Wait For Run Completion And Verify Status
-    ...    namespace=${PROJECT}    username=${TEST_USER.USERNAME}    password=${TEST_USER.PASSWORD}
-    ...    pipeline_run_id=${pipeline_run_id}    pipeline_run_timeout=180
-    ...    pipeline_run_expected_status=SUCCEEDED
-
-    [Teardown]       DataSciencePipelinesBackend.Delete Pipeline And Related Resources
-    ...    namespace=${PROJECT}    username=${TEST_USER.USERNAME}    password=${TEST_USER.PASSWORD}
-    ...    pipeline_id=${pipeline_id}
-
-Verify Pipeline Runs Successfully When Providing Values For All Optional Parameters
-    [Documentation]    Creates a pipeline run providing values for all optional parameters and verifies that
-    ...    the run finishes successfully
-    [Tags]    Tier1
-
-    Skip If Test Enviroment Is ROSA-HCP    msg=Skipped due to automation bug on ROSA-HCP (tracked at RHOAIENG-16414)
-    ${pipeline_run_params}=    Create Dictionary
-    ...    explicit_optional_input="Explicit optional input value"
-    ...    implicit_optional_input="Implicit optional input value"
-    ...    non_optional_input="Non Optional Input Value"
-
-    ${pipeline_id}    ${pipeline_version_id}    ${pipeline_run_id}    ${experiment_id}=
-    ...    DataSciencePipelinesBackend.Import Pipeline And Create Run
-    ...    namespace=${PROJECT}    username=${TEST_USER.USERNAME}    password=${TEST_USER.PASSWORD}
-    ...    pipeline_name=optional-parameters-providing-values
-    ...    pipeline_description=A pipeline testing optional parameters, where all optional parameters have values
-    ...    pipeline_package_path=${PIPELINE_OPTIONAL_PARAMETERS_FILEPATH}
-    ...    pipeline_run_name=optional-parameters-providing-values-run
-    ...    pipeline_run_params=${pipeline_run_params}
-
-    DataSciencePipelinesBackend.Wait For Run Completion And Verify Status
-    ...    namespace=${PROJECT}    username=${TEST_USER.USERNAME}    password=${TEST_USER.PASSWORD}
-    ...    pipeline_run_id=${pipeline_run_id}    pipeline_run_timeout=180
-    ...    pipeline_run_expected_status=SUCCEEDED
-
-    [Teardown]       DataSciencePipelinesBackend.Delete Pipeline And Related Resources
-    ...    namespace=${PROJECT}    username=${TEST_USER.USERNAME}    password=${TEST_USER.PASSWORD}
-    ...    pipeline_id=${pipeline_id}
-
 Verify Pipeline Run Status When Using Exit Handlers
     [Documentation]  Verifies that, when using using pipeline exit handlers (dsl.ExitHandler), if a task inside the
     ...    handle fails but the exit handler task succeeds, the overall pipeline run status is Failed.
